@@ -1,0 +1,23 @@
+CREATE TABLE Produtos 
+(
+	ProdutoId SERIAL,
+	Nome VARCHAR(200),
+	LinkProduto TEXT,
+	PRIMARY KEY(ProdutoId)
+);
+
+CREATE TABLE InformacoesConsulta 
+(
+	InformacoesConsultaId SERIAL,
+	ProdutoId INTEGER NOT NULL,
+	Valor FLOAT NOT NULL,
+	Dia INTEGER NOT NULL,
+	Mes INTEGER NOT NULL,
+	Ano INTEGER NOT NULL,
+	PRIMARY KEY(InformacoesConsultaId),
+	CONSTRAINT FK_ProdutoId FOREIGN KEY (ProdutoId)
+	REFERENCES Produtos (ProdutoId) MATCH SIMPLE
+	ON UPDATE NO ACTION
+	ON DELETE NO ACTION
+	
+);

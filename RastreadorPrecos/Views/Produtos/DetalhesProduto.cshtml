@@ -1,0 +1,256 @@
+﻿@model IEnumerable<RastreadorPrecos.Models.InformacoesConsulta>
+
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<input type="hidden" id="ProdutoId" value="@ViewData["ProdutoId"]" />
+
+
+<div class="container">
+    <div class="row alert alert-secondary">
+        <div class="input-group">
+            <div class="col-1 p-0">
+                <select class="form-control form-control-sm" id="diaInicio">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                </select>
+            </div>
+
+            <div>
+                <div class="input-group-prepand">
+                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                </div>
+            </div>
+
+            <div class="col-1 p-0">
+                <select class="form-control form-control-sm" id="diaFim">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="19">19</option>
+                    <option value="20">20</option>
+                    <option value="21">21</option>
+                    <option value="22">22</option>
+                    <option value="23">23</option>
+                    <option value="24">24</option>
+                    <option value="25">25</option>
+                    <option value="26">26</option>
+                    <option value="27">27</option>
+                    <option value="28">28</option>
+                    <option value="29">29</option>
+                    <option value="30">30</option>
+                    <option value="31">31</option>
+                </select>
+            </div>
+
+            <div class="col-4 p-0">
+                <select id="mes" class="form-control form-control-sm">
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+            </div>
+
+            <div class="col-4 p-0">
+                <button type="button" class="btn btn-outline-secondary btn-sm" id="btnFiltro">Filtar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<hr />
+
+<canvas id="grafico"></canvas>
+
+
+
+<p>
+    <a asp-action="NovaInformacao" asp-controller="InformacoesConsulta" asp-route-produtoId="@ViewData["ProdutoId"]" class="btn btn-outline-success btn-sm">Nova Informação</a>
+</p>
+<table class="table table-hover table-sm">
+    <thead class="thead-light">
+        <tr>
+            <th>
+                Valor
+            </th>
+            <th>
+                Data da consulta
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    R$ @item.Valor
+                </td>
+                <td>
+                    @String.Format("{0}/{1}/{2}", item.Dia, item.Mes, item.Ano)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const produtoId = parseInt($("#ProdutoId").val());
+            const diaInicio = 1;
+            const diaFim = 31;
+            const mes = new Date().getMonth() + 1;
+            const ano = new Date().getFullYear();
+            PegarDados(produtoId, diaInicio, diaFim, mes, ano);
+        });
+
+        $("#btnFiltro").on('click', function () {
+            const produtoId = parseInt($("#ProdutoId").val());
+            const diaInicio = parseInt($("#diaInicio").val());
+            const diaFim = parseInt($("#diaFim").val());
+            const mes = parseInt($("#mes").val());
+            const ano = new Date().getFullYear();
+
+            if (diaInicio > diaFim) {
+                alert("Datas inválidas");
+            }
+            else
+            {
+                PegarDados(produtoId, diaInicio, diaFim, mes, ano);
+            }
+        });
+
+        function PegarDados(produtoId, diaInicio, diaFim, mes, ano) {
+            $.ajax({
+                method: "GET",
+                url: "/Produtos/DadosGrafico",
+                data: { produtoId: produtoId, diaInicio: diaInicio, diaFim: diaFim, mes: mes, ano: ano },
+                success: function (dados) {
+                    new Chart(document.getElementById("grafico"), {
+                        type: 'line',
+                        data: {
+                            labels: PegarDatas(dados),
+                            datasets: [{
+                                label: "Preço por produto",
+                                data: PegarValores(dados),
+                                backgroundColor: "#fff",
+                                borderColor: "#c23616",
+                                pointBackgroundColor: "#c23616",
+                                pointBorderColor: "#c23616",
+                                pointStyle: 'circle',
+                                fill: false,
+                                lineTension: 0,
+                                spanGaps: true
+                            }]
+                        },
+
+                        options: {
+                            animation: {
+                                easing: "linear",
+                            },
+
+                            legend: {
+                                labels: {
+                                    usePointStyle: true
+                                }
+                            },
+
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+
+                                yAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
+
+                    })
+                }
+            })
+        }
+
+        function PegarDatas(dados) {
+            let indice = 0;
+            let datas = [];
+
+            while (indice < dados.length) {
+                datas.push('' + dados[indice].dia + '/' + dados[indice].mes + '/' + dados[indice].ano);
+                indice = indice + 1;
+            }
+
+            return datas;
+        }
+
+        function PegarValores(dados) {
+            let indice = 0;
+            let valores = [];
+
+            while (indice < dados.length) {
+                valores.push(dados[indice].valor);
+                indice = indice + 1;
+            }
+
+            return valores;
+        }
+    </script>
+}

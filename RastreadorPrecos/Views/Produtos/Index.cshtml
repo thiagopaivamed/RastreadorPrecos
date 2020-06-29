@@ -1,0 +1,56 @@
+﻿@model IEnumerable<RastreadorPrecos.Models.Produto>
+
+@{
+    ViewData["Title"] = "Produtos cadastrados";
+}
+
+
+<p>
+    <a asp-action="NovoProduto" class="btn btn-outline-success btn-sm">Novo Produto</a>
+</p>
+<table class="table table-hover table-sm">
+    <thead class="thead-light">
+        <tr>
+            <th>
+                #
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LinkProduto)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProdutoId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                <a href="@item.LinkProduto">Link do produto</a>
+            </td>
+            <td>
+                <div class="row">
+                    <a asp-controller="Produtos" asp-action="AtualizarProduto" asp-route-produtoId="@item.ProdutoId" class="btn btn-primary btn-sm rounded-circle">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+
+                    <a asp-controller="Produtos" asp-action="DetalhesProduto" asp-route-produtoId="@item.ProdutoId" class="btn btn-secondary btn-sm rounded-circle">
+                        <i class="fa fa-tasks"></i>
+                    </a>
+
+                    <form asp-controller="Produtos" asp-action="ExcluirProduto" asp-route-produtoId="@item.ProdutoId" onclick="confirm('Prosseguir com a exclusão do produto @item.Nome ?')">
+                        <button type="submit" class="btn btn-danger btn-sm rounded-circle"><i class="fa fa-times-circle"></i></button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
